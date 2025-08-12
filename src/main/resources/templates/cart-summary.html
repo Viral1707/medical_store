@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart Summary</title>
+    <style>
+        table { width: 60%; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .cart-table-wrapper {
+            position: relative;
+            width: 60%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Cart Summary</h2>
+    <div class="cart-table-wrapper" id="cart-table-wrapper">
+        <table id="cart-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody id="cart-table-body">
+                <!-- Cart items will be injected here by JS -->
+            </tbody>
+        </table>
+    </div>
+    <div style="text-align:center; margin-top:32px; display:flex; justify-content:center; gap:16px;">
+        <a href="/" class="btn btn-success" style="padding:12px 32px; font-size:1.1em; border-radius:6px; color:#fff; text-decoration:none;">&#8592; Back to Home</a>
+        <a href="/products" class="btn btn-outline-success" style="padding:12px 32px; font-size:1.1em; border-radius:6px; text-decoration:none;">Continue Shopping</a>
+        <button id="checkout-btn" class="btn btn-primary" style="padding:12px 32px; font-size:1.1em; border-radius:6px; margin-left:16px;">Checkout & Payment</button>
+        <button id="empty-cart-btn" class="btn btn-danger" style="padding:12px 32px; font-size:1.1em; border-radius:6px; margin-left:16px;">Empty Cart</button>
+    </div>
+    <div id="payment-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:9999; color:#fff; font-size:2em; text-align:center; justify-content:center; align-items:center;">
+        <div style="width:100vw; height:100vh; display:flex; justify-content:center; align-items:center;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div>Payment logic will be created very soon. Thank you!</div>
+                <div>Please wait for 10 seconds...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Product details mapping (add all products as needed)
+    const productDetails = {
+        'paracetamol': { name: 'Paracetamol Tablets', price: 50 },
+        'ibuprofen': { name: 'Ibuprofen Tablets', price: 60 },
+        'vitamin-c': { name: 'Vitamin C Capsules', price: 80 },
+        'calcium': { name: 'Calcium Tablets', price: 70 },
+        'multivitamin': { name: 'Multivitamin Capsules', price: 90 },
+        'antacid': { name: 'Antacid Tablets', price: 40 },
+        'sanitizer': { name: 'Hand Sanitizer', price: 30 },
+        'glucose': { name: 'Glucose Powder', price: 25 },
+        'pain-relief': { name: 'Pain Relief Spray', price: 45 },
+        'ointment': { name: 'Ointment for Burns', price: 35 },
+        'cough-syrup': { name: 'Cough Syrup', price: 55 },
+        'ors': { name: 'Oral Rehydration Salts', price: 20 },
+        'bp-monitor': { name: 'Blood Pressure Monitor', price: 500 },
+        'thermometer': { name: 'Thermometer', price: 120 },
+        'weighing-scale': { name: 'Digital Weighing Scale', price: 350 },
+        'pulse-oximeter': { name: 'Pulse Oximeter', price: 400 },
+        'glucometer': { name: 'Glucometer', price: 450 },
+        'nebulizer': { name: 'Nebulizer', price: 600 },
+        'face-masks': { name: 'Face Masks', price: 10 },
+        'antiseptic-cream': { name: 'Antiseptic Cream', price: 15 },
+        'bandages': { name: 'Bandages', price: 12 },
+        'cotton-rolls': { name: 'Cotton Rolls', price: 8 },
+        'handwash': { name: 'Handwash Liquid', price: 18 },
+        'plaster-strips': { name: 'Plaster Strips', price: 5 }
+    };
+    function renderCartSummary() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+        const tbody = document.getElementById('cart-table-body');
+        tbody.innerHTML = '';
+        let grandTotal = 0;
+        Object.keys(cart).forEach(function(id, idx) {
+            const details = productDetails[id] || { name: id, price: 0 };
+            const qty = cart[id].qty;
+            const price = details.price;
+            const totalPrice = qty * price;
+            grandTotal += totalPrice;
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${details.name}</td>
+                <td style="display:flex;align-items:center;gap:4px;">
+                    <button class='qty-btn' data-id='${id}' data-action='decrement' style='width:22px;height:22px;font-size:14px;'>-</button>
+                    <span class='qty-value' id='qty-${id}'>${qty}</span>
+                    <button class='qty-btn' data-id='${id}' data-action='increment' style='width:22px;height:22px;font-size:14px;'>+</button>
+                </td>
+                <td>₹${price}</td>
+                <td>₹${totalPrice}</td>`;
+            tbody.appendChild(row);
+        });
+        if (Object.keys(cart).length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="4" style="text-align:center;">No products in cart.</td>';
+            tbody.appendChild(row);
+        } else {
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `<td colspan="3" style="text-align:right;font-weight:bold;">Grand Total:</td><td style="font-weight:bold;">₹${grandTotal}</td>`;
+            tbody.appendChild(totalRow);
+        }
+    }
+    renderCartSummary();
+    // Add event listeners for qty buttons
+    function updateQty(id, action) {
+        const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+        if (!cart[id]) return;
+        if (action === 'increment' && cart[id].qty < 10) cart[id].qty++;
+        if (action === 'decrement' && cart[id].qty > 0) cart[id].qty--;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCartSummary();
+    }
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('qty-btn')) {
+            const id = e.target.getAttribute('data-id');
+            const action = e.target.getAttribute('data-action');
+            updateQty(id, action);
+        }
+    });
+    document.getElementById('checkout-btn').onclick = function() {
+        var overlay = document.getElementById('payment-overlay');
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 10000);
+    };
+    document.getElementById('empty-cart-btn').addEventListener('click', function() {
+        fetch('/empty-cart', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('cart'); // Clear frontend cart
+                    window.location.reload();
+                } else {
+                    alert('Failed to empty cart.');
+                }
+            });
+    });
+    </script>
+</body>
+</html>

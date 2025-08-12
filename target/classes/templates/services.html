@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Services - Om Medical Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Segoe+UI:400,700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #c8e6c9 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #2e8b57 60%, #43a047 100%);
+            border-radius: 8px;
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 0 0 0 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .navbar ul li {
+            display: inline-block;
+            margin: 0 18px;
+        }
+        .navbar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 10px 18px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .navbar ul li a:hover {
+            background: #388e3c;
+        }
+        .navbar ul li a.active {
+            background: #a5d6a7;
+            color: #2e8b57;
+        }
+        .header {
+            text-align: center;
+            padding: 24px 0 0 0;
+            font-size: 2.5em;
+            color: #2e8b57;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .service-section {
+            margin: 48px auto 24px auto;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(46,139,87,0.10);
+            padding: 32px 28px;
+        }
+        .service-section h2 {
+            color: #228b22;
+            margin-bottom: 24px;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        .service-section ul {
+            list-style-type: none;
+            padding: 0;
+            color: #444;
+            font-size: 1.1em;
+        }
+        .service-section li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .service-section li:last-child {
+            border-bottom: none;
+        }
+        .service-section .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .service-section .card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(46,139,87,0.18);
+            border: 2px solid #2e8b57;
+            z-index: 2;
+        }
+        .back-link {
+            display: block;
+            margin: 2rem auto 0 auto;
+            text-align: center;
+            color: #2e8b57;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0;
+            transition: background 0.2s;
+        }
+        .back-link:hover {
+            background: #e0f7fa;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body id="top">
+    <div class="header">Om Medical Store</div>
+    <nav class="navbar sticky-navbar navbar-expand-lg bg-success">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link text-white" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/products">Products</a></li>
+                    <li class="nav-item"><a class="nav-link text-white active" href="/services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/aboutus">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="service-section">
+        <h2>Our Services</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Home Delivery" style="width:48px;height:48px;">
+                        <h5 class="card-title mt-2">Home Delivery of Medicines</h5>
+                        <p class="card-text">Fast and reliable delivery to your doorstep, ensuring you never run out of essential medicines.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Health Consultation" style="width:48px;height:48px;">
+                        <h5 class="card-title mt-2">Free Health Consultation</h5>
+                        <p class="card-text">Consult with our expert pharmacists for free advice on medicines and wellness products.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="BP & Sugar Checkup" style="width:48px;height:48px;">
+                        <h5 class="card-title mt-2">Blood Pressure & Sugar Checkup</h5>
+                        <p class="card-text">Get your BP and sugar levels checked in-store by trained staff using modern equipment.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Prescription Reminder" style="width:48px;height:48px;">
+                        <h5 class="card-title mt-2">Prescription Reminder Service</h5>
+                        <p class="card-text">Receive timely reminders for refilling your prescriptions so you never miss a dose.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Emergency Support" style="width:48px;height:48px;">
+                        <h5 class="card-title mt-2">24/7 Emergency Support</h5>
+                        <p class="card-text">Our team is available round-the-clock for urgent medical needs and queries.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="faq-section" style="max-width:600px;margin:40px auto;padding:32px;background:#e1f5fe;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color:#2e8b57;">Frequently Asked Questions</h3>
+        <ul style="list-style:none;padding:0;">
+            <li style="margin-bottom:16px;"><strong>Q: How do I order medicines for home delivery?</strong><br>A: You can order via our website or call us directly. Delivery is free for orders above ₹500.</li>
+            <li style="margin-bottom:16px;"><strong>Q: Is health consultation really free?</strong><br>A: Yes, our pharmacists provide free advice on medicines and wellness products.</li>
+            <li style="margin-bottom:16px;"><strong>Q: What areas do you serve for delivery?</strong><br>A: We deliver across Vejalpur and nearby localities.</li>
+        </ul>
+    </section>
+    <a href="#top" class="back-link" style="position:fixed;right:20px;bottom:20px;z-index:999;">&#8593; Back to Top</a>
+    <a href="/" class="back-link">&#8592; Back to Home</a>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products - Om Medical Store</title>
+    <!-- Bootstrap 5 and custom styles for modern look -->
+    <link href="https://fonts.googleapis.com/css?family=Segoe+UI:400,700&display=swap" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #c8e6c9 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #2e8b57 60%, #43a047 100%);
+            border-radius: 8px;
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 0 0 0 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .navbar ul li {
+            display: inline-block;
+            margin: 0 18px;
+        }
+        .navbar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 10px 18px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .navbar ul li a:hover {
+            background: #388e3c;
+        }
+        .navbar ul li a.active {
+            background: #a5d6a7;
+            color: #2e8b57;
+        }
+        .header {
+            text-align: center;
+            padding: 24px 0 0 0;
+            font-size: 2.5em;
+            color: #2e8b57;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .sticky-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .section-title {
+            cursor: pointer;
+            user-select: none;
+            color: #228b22;
+            font-size: 1.7em;
+            margin: 40px 0 24px 0;
+            text-align: left;
+            font-weight: bold;
+        }
+        .product-section {
+            margin-bottom: 48px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(46,139,87,0.10);
+            padding: 1.2rem;
+            margin: 1.2rem auto;
+            max-width: 240px;
+            min-width: 240px;
+            min-height: 240px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s cubic-bezier(.25,.8,.25,1), box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.04);
+            box-shadow: 0 8px 32px rgba(46,139,87,0.18);
+        }
+        .product-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+        .product-card h5 {
+            color: #2e8b57;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .product-card p {
+            color: #444;
+            font-size: 0.95em;
+            margin-bottom: 0;
+        }
+        .cart-btn {
+            display: inline-block;
+            padding: 0.7em 2em;
+            border-radius: 2em;
+            background: linear-gradient(90deg, #43a047 60%, #2e8b57 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1em;
+            border: none;
+            box-shadow: 0 2px 8px rgba(46,139,87,0.10);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s, width 0.3s;
+            min-width: 160px;
+            text-align: center;
+        }
+        .cart-btn:hover {
+            background: linear-gradient(90deg, #2e8b57 60%, #43a047 100%);
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(46,139,87,0.18);
+        }
+        .cart-btn.removed {
+            background: linear-gradient(90deg, #e53935 60%, #d32f2f 100%);
+            min-width: 160px;
+            font-size: 0.95em;
+            padding: 0.7em 2em;
+            margin-bottom: 12px;
+        }
+        .cart-btn.removed:hover {
+            background: linear-gradient(90deg, #d32f2f 60%, #e53935 100%);
+        }
+        .back-link {
+            display: block;
+            margin: 32px auto;
+            text-align: center;
+            color: #2e8b57;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0;
+            transition: background 0.2s;
+        }
+        .back-link:hover {
+            background: #e0f7fa;
+            text-decoration: underline;
+        }
+        @media (max-width: 900px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .product-card .cart-btn-group {
+            margin-top: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Om Medical Store</div>
+    <nav class="navbar sticky-navbar navbar-expand-lg bg-success">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link text-white" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white active" href="/products">Products</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/aboutus">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="/cart-summary">Cart Summary</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <!-- Message div -->
+        <div id="cart-message" style="display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;" class="alert alert-success text-center"></div>
+        <!-- Cart Section -->
+        <div id="cart-section" class="mb-4" style="display:none;max-width:600px;margin:24px auto;padding:24px;background:#fff;border-radius:1rem;box-shadow:0 4px 16px rgba(46,139,87,0.10);">
+            <h4 style="color:#2e8b57;">Your Cart</h4>
+            <div id="cart-items-list"></div>
+        </div>
+        <!-- Tablets & Capsules -->
+        <div class="product-section">
+            <div class="section-title" data-bs-toggle="collapse" data-bs-target="#tabletsCapsules" aria-expanded="false" aria-controls="tabletsCapsules">Tablets & Capsules</div>
+            <div class="collapse" id="tabletsCapsules">
+                <div class="product-grid">
+                    <div class="product-card" id="card-paracetamol">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Paracetamol">
+                <h5>Paracetamol Tablets</h5>
+                <p>Fever & pain relief</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹50</div>
+                <div class="cart-btn-group" id="qty-group-paracetamol" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('paracetamol', -1)">-</button>
+                    <span id="qty-paracetamol" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('paracetamol', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-paracetamol" onclick="toggleCart('paracetamol')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-ibuprofen">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Ibuprofen">
+                <h5>Ibuprofen Tablets</h5>
+                <p>Pain & inflammation</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹60</div>
+                <div class="cart-btn-group" id="qty-group-ibuprofen" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ibuprofen', -1)">-</button>
+                    <span id="qty-ibuprofen" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ibuprofen', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-ibuprofen" onclick="toggleCart('ibuprofen')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-vitamin-c">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Vitamin C">
+                <h5>Vitamin C Capsules</h5>
+                <p>Immunity booster</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹80</div>
+                <div class="cart-btn-group" id="qty-group-vitamin-c" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('vitamin-c', -1)">-</button>
+                    <span id="qty-vitamin-c" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('vitamin-c', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-vitamin-c" onclick="toggleCart('vitamin-c')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-calcium">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Calcium">
+                <h5>Calcium Tablets</h5>
+                <p>Bone health</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹70</div>
+                <div class="cart-btn-group" id="qty-group-calcium" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('calcium', -1)">-</button>
+                    <span id="qty-calcium" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('calcium', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-calcium" onclick="toggleCart('calcium')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-multivitamin">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Multivitamin">
+                <h5>Multivitamin Capsules</h5>
+                <p>Daily nutrition</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹90</div>
+                <div class="cart-btn-group" id="qty-group-multivitamin" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('multivitamin', -1)">-</button>
+                    <span id="qty-multivitamin" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('multivitamin', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-multivitamin" onclick="toggleCart('multivitamin')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-antacid">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Antacid">
+                <h5>Antacid Tablets</h5>
+                <p>Acidity relief</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹40</div>
+                <div class="cart-btn-group" id="qty-group-antacid" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('antacid', -1)">-</button>
+                    <span id="qty-antacid" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('antacid', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-antacid" onclick="toggleCart('antacid')">Add to Cart</button>
+</div>
+                </div>
+            </div>
+        </div>
+        <!-- Health & Wellness -->
+        <div class="product-section">
+            <div class="section-title" data-bs-toggle="collapse" data-bs-target="#healthWellness" aria-expanded="false" aria-controls="healthWellness">Health & Wellness</div>
+            <div class="collapse" id="healthWellness">
+                <div class="product-grid">
+                    <div class="product-card" id="card-sanitizer">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Hand Sanitizer">
+                <h5>Hand Sanitizer</h5>
+                <p>Germ protection</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹30</div>
+                <div class="cart-btn-group" id="qty-group-sanitizer" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('sanitizer', -1)">-</button>
+                    <span id="qty-sanitizer" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('sanitizer', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-sanitizer" onclick="toggleCart('sanitizer')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-glucose">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Glucose Powder">
+                <h5>Glucose Powder</h5>
+                <p>Energy boost</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹25</div>
+                <div class="cart-btn-group" id="qty-group-glucose" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('glucose', -1)">-</button>
+                    <span id="qty-glucose" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('glucose', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-glucose" onclick="toggleCart('glucose')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-pain-relief">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Pain Relief Spray">
+                <h5>Pain Relief Spray</h5>
+                <p>Muscle pain relief</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹45</div>
+                <div class="cart-btn-group" id="qty-group-pain-relief" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('pain-relief', -1)">-</button>
+                    <span id="qty-pain-relief" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('pain-relief', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-pain-relief" onclick="toggleCart('pain-relief')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-ointment">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Ointment">
+                <h5>Ointment for Burns</h5>
+                <p>Burn care</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹35</div>
+                <div class="cart-btn-group" id="qty-group-ointment" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ointment', -1)">-</button>
+                    <span id="qty-ointment" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ointment', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-ointment" onclick="toggleCart('ointment')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-cough-syrup">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Cough Syrup">
+                <h5>Cough Syrup</h5>
+                <p>Cough relief</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹55</div>
+                <div class="cart-btn-group" id="qty-group-cough-syrup" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('cough-syrup', -1)">-</button>
+                    <span id="qty-cough-syrup" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('cough-syrup', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-cough-syrup" onclick="toggleCart('cough-syrup')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-ors">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Oral Rehydration">
+                <h5>Oral Rehydration Salts</h5>
+                <p>Hydration</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹20</div>
+                <div class="cart-btn-group" id="qty-group-ors" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ors', -1)">-</button>
+                    <span id="qty-ors" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('ors', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-ors" onclick="toggleCart('ors')">Add to Cart</button>
+</div>
+                </div>
+            </div>
+        </div>
+        <!-- Medical Equipment -->
+        <div class="product-section">
+            <div class="section-title" data-bs-toggle="collapse" data-bs-target="#medicalEquipment" aria-expanded="false" aria-controls="medicalEquipment">Medical Equipment</div>
+            <div class="collapse" id="medicalEquipment">
+                <div class="product-grid">
+                    <div class="product-card" id="card-bp-monitor">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="BP Monitor">
+                <h5>Blood Pressure Monitor</h5>
+                <p>BP check</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹500</div>
+                <div class="cart-btn-group" id="qty-group-bp-monitor" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('bp-monitor', -1)">-</button>
+                    <span id="qty-bp-monitor" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('bp-monitor', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-bp-monitor" onclick="toggleCart('bp-monitor')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-thermometer">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Thermometer">
+                <h5>Thermometer</h5>
+                <p>Temperature check</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹120</div>
+                <div class="cart-btn-group" id="qty-group-thermometer" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('thermometer', -1)">-</button>
+                    <span id="qty-thermometer" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('thermometer', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-thermometer" onclick="toggleCart('thermometer')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-weighing-scale">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Weighing Scale">
+                <h5>Digital Weighing Scale</h5>
+                <p>Weight check</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹350</div>
+                <div class="cart-btn-group" id="qty-group-weighing-scale" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('weighing-scale', -1)">-</button>
+                    <span id="qty-weighing-scale" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('weighing-scale', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-weighing-scale" onclick="toggleCart('weighing-scale')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-pulse-oximeter">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Pulse Oximeter">
+                <h5>Pulse Oximeter</h5>
+                <p>Oxygen level</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹400</div>
+                <div class="cart-btn-group" id="qty-group-pulse-oximeter" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('pulse-oximeter', -1)">-</button>
+                    <span id="qty-pulse-oximeter" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('pulse-oximeter', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-pulse-oximeter" onclick="toggleCart('pulse-oximeter')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-glucometer">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Glucometer">
+                <h5>Glucometer</h5>
+                <p>Blood sugar monitor</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹450</div>
+                <div class="cart-btn-group" id="qty-group-glucometer" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('glucometer', -1)">-</button>
+                    <span id="qty-glucometer" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('glucometer', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-glucometer" onclick="toggleCart('glucometer')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-nebulizer">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Nebulizer">
+                <h5>Nebulizer</h5>
+                <p>Respiratory care</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹600</div>
+                <div class="cart-btn-group" id="qty-group-nebulizer" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('nebulizer', -1)">-</button>
+                    <span id="qty-nebulizer" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('nebulizer', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-nebulizer" onclick="toggleCart('nebulizer')">Add to Cart</button>
+</div>
+                </div>
+            </div>
+        </div>
+        <!-- Personal Care & First Aid -->
+        <div class="product-section">
+            <div class="section-title" data-bs-toggle="collapse" data-bs-target="#personalCare" aria-expanded="false" aria-controls="personalCare">Personal Care & First Aid</div>
+            <div class="collapse" id="personalCare">
+                <div class="product-grid">
+                    <div class="product-card" id="card-face-masks">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Face Masks">
+                <h5>Face Masks</h5>
+                <p>Protection</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹10</div>
+                <div class="cart-btn-group" id="qty-group-face-masks" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('face-masks', -1)">-</button>
+                    <span id="qty-face-masks" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('face-masks', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-face-masks" onclick="toggleCart('face-masks')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-antiseptic-cream">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Antiseptic Cream">
+                <h5>Antiseptic Cream</h5>
+                <p>Wound care</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹15</div>
+                <div class="cart-btn-group" id="qty-group-antiseptic-cream" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('antiseptic-cream', -1)">-</button>
+                    <span id="qty-antiseptic-cream" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('antiseptic-cream', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-antiseptic-cream" onclick="toggleCart('antiseptic-cream')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-bandages">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Bandages">
+                <h5>Bandages</h5>
+                <p>First aid</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹12</div>
+                <div class="cart-btn-group" id="qty-group-bandages" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('bandages', -1)">-</button>
+                    <span id="qty-bandages" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('bandages', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-bandages" onclick="toggleCart('bandages')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-cotton-rolls">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Cotton Rolls">
+                <h5>Cotton Rolls</h5>
+                <p>Wound dressing</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹8</div>
+                <div class="cart-btn-group" id="qty-group-cotton-rolls" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('cotton-rolls', -1)">-</button>
+                    <span id="qty-cotton-rolls" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('cotton-rolls', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-cotton-rolls" onclick="toggleCart('cotton-rolls')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-handwash">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Handwash">
+                <h5>Handwash Liquid</h5>
+                <p>Hand hygiene</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹18</div>
+                <div class="cart-btn-group" id="qty-group-handwash" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('handwash', -1)">-</button>
+                    <span id="qty-handwash" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('handwash', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-handwash" onclick="toggleCart('handwash')">Add to Cart</button>
+</div>
+                    <div class="product-card" id="card-plaster-strips">
+                <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Plaster Strips">
+                <h5>Plaster Strips</h5>
+                <p>Minor cuts</p>
+                <div style="color:#2e8b57;font-weight:bold;margin-bottom:8px;">₹5</div>
+                <div class="cart-btn-group" id="qty-group-plaster-strips" style="display:none;">
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('plaster-strips', -1)">-</button>
+                    <span id="qty-plaster-strips" style="margin:0 12px;font-weight:bold;">0</span>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="changeQty('plaster-strips', 1)">+</button>
+                </div>
+                <button type="button" class="cart-btn" id="cart-btn-plaster-strips" onclick="toggleCart('plaster-strips')">Add to Cart</button>
+</div>
+                </div>
+            </div>
+        </div>
+        <!-- Hundreds of products can be added in the same structure above, section-wise -->
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+let cart = {};
+
+// Load cart from localStorage if available
+if (localStorage.getItem('cart')) {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    // Restore quantities and button states on page load
+    Object.keys(cart).forEach(function(id) {
+        const qtySpan = document.getElementById('qty-' + id);
+        const btn = document.getElementById('cart-btn-' + id);
+        if (qtySpan && btn) {
+            qtySpan.textContent = cart[id].qty;
+            btn.textContent = 'Remove from Cart';
+            btn.classList.add('removed');
+            showQtyControls(id, true);
+        }
+    });
+}
+
+function showQtyControls(id, show) {
+    const qtyGroup = document.getElementById('qty-group-' + id);
+    if (qtyGroup) qtyGroup.style.display = show ? 'flex' : 'none';
+}
+function changeQty(id, delta) {
+    const qtySpan = document.getElementById('qty-' + id);
+    let qty = parseInt(qtySpan.textContent) + delta;
+    if (qty < 0) qty = 0;
+    if (qty > 10) qty = 10;
+    qtySpan.textContent = qty;
+    if (cart[id]) cart[id].qty = qty;
+    if (qty === 0) {
+        showQtyControls(id, false);
+        cart[id] && delete cart[id];
+        const btn = document.getElementById('cart-btn-' + id);
+        btn.textContent = 'Add to Cart';
+        btn.classList.remove('removed');
+    }
+    // Save cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+function toggleCart(id) {
+    const btn = document.getElementById('cart-btn-' + id);
+    const qtySpan = document.getElementById('qty-' + id);
+    let qty = parseInt(qtySpan.textContent);
+    if (btn.textContent === 'Add to Cart') {
+        qty = 1;
+        qtySpan.textContent = qty;
+        showQtyControls(id, true);
+        cart[id] = {qty: qty};
+        btn.textContent = 'Remove from Cart';
+        btn.classList.add('removed');
+    } else {
+        showQtyControls(id, false);
+        qtySpan.textContent = 0;
+        delete cart[id];
+        btn.textContent = 'Add to Cart';
+        btn.classList.remove('removed');
+    }
+    // Save cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+function updateProductCardsFromCart() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    [
+        'paracetamol','ibuprofen','vitamin-c','calcium','multivitamin','antacid','sanitizer','glucose','pain-relief','ointment','cough-syrup','ors','bp-monitor','thermometer','weighing-scale','pulse-oximeter','glucometer','nebulizer','face-masks','antiseptic-cream','bandages','cotton-rolls','handwash','plaster-strips'
+    ].forEach(function(id) {
+        var qtyGroup = document.getElementById('qty-group-' + id);
+        var cartBtn = document.getElementById('cart-btn-' + id);
+        var qtySpan = document.getElementById('qty-' + id);
+        if (cart[id]) {
+            if (qtyGroup) qtyGroup.style.display = '';
+            if (qtySpan) qtySpan.textContent = cart[id].qty;
+            if (cartBtn) {
+                cartBtn.textContent = 'Remove from Cart';
+                cartBtn.classList.add('removed');
+                cartBtn.style.display = '';
+            }
+        } else {
+            if (qtyGroup) qtyGroup.style.display = 'none';
+            if (cartBtn) {
+                cartBtn.textContent = 'Add to Cart';
+                cartBtn.classList.remove('removed');
+                cartBtn.style.display = '';
+            }
+            if (qtySpan) qtySpan.textContent = 0;
+        }
+    });
+}
+window.addEventListener('storage', function(e) {
+    if (e.key === 'cart') {
+        updateProductCardsFromCart();
+    }
+});
+document.addEventListener('DOMContentLoaded', function() {
+    updateProductCardsFromCart();
+});
+    </script>
+</body>
+</html>
