@@ -1,0 +1,151 @@
+# Medical Store Application – Functional Specification Document
+
+## 1. Introduction
+The Medical Store application is a comprehensive web-based platform designed to facilitate the management, sale, and purchase of medical products, medicines, and healthcare items. It serves both customers and store administrators, providing a seamless experience for browsing, searching, purchasing, and managing products and orders. The application is built using Java Spring Boot for the backend, Thymeleaf for server-side rendering, and modern frontend technologies for an intuitive user interface.
+
+## 2. Application Structure
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap, Thymeleaf
+- **Backend:** Java Spring Boot (REST APIs, Controllers, Services)
+- **Database:** Relational Database (e.g., MySQL, PostgreSQL)
+- **Other:** JQuery for AJAX, Popper.js for modals
+
+## 3. User Roles
+- **Customer:** Can search, view, and purchase products.
+- **Administrator:** Can manage products, categories, and orders.
+
+## 4. Functional Modules
+
+### 4.1 Home Page (`index.html`)
+- **Search Bar:** Allows users to search for products or medicines by name. Features auto-suggestion and category grouping.
+- **Product Search Dropdown:** Displays matching products grouped by category as the user types.
+- **Product Details Modal:** On selecting a product and clicking "Search", product details are shown in a modal pop-up (AJAX-based, no page reload).
+- **Featured Products:** Highlights popular or recommended products with images and short descriptions.
+- **Discounts Section:** Lists current offers, discounts, and promotional deals.
+- **Testimonials:** Rotating carousel of customer reviews and feedback.
+- **Footer:** Contains contact information, social media links, and newsletter signup form.
+
+### 4.2 Product Listing Page (`products.html`)
+- **Product List:** Displays all available products, grouped by category.
+- **Search/Filter:** Users can filter products by name, category, or other attributes.
+- **Product Selection:** Clicking a product opens its details (either as a modal or a dedicated page).
+- **Pagination:** Handles large product catalogs efficiently.
+
+### 4.3 Product Details Page (`product-details.html`)
+- **Product Information:** Shows product name, image, price, description, category, and other relevant details.
+- **Error Handling:** If no product is selected or found, displays a user-friendly message.
+- **Add to Cart:** Option to add the product to the shopping cart.
+- **Related Products:** Suggests similar or complementary products.
+
+### 4.4 Cart Summary Page (`cart-summary.html`)
+- **Cart Items:** Lists all products added to the cart, with images, names, prices, and quantities.
+- **Quantity Management:** Users can update quantities or remove items from the cart.
+- **Total Calculation:** Displays subtotal, discounts, taxes, and final total.
+- **Checkout Button:** Proceeds to the order placement process.
+
+### 4.5 Order Placement & Confirmation
+- **Order Form:** Collects customer details (name, address, contact info) and delivery preferences.
+- **Order Review:** Shows a summary of the order before final confirmation.
+- **Order Confirmation:** Displays a confirmation message and order details after successful placement.
+- **Order Tracking:** (Optional) Allows users to track the status of their orders.
+
+### 4.6 Admin Features
+- **Product Management:** Add, edit, or delete products. Upload product images and manage stock levels.
+- **Category Management:** Create, edit, or delete product categories.
+- **Order Management:** View, process, and update customer orders. Change order status (e.g., pending, shipped, delivered).
+- **User Management:** (Optional) Manage customer and admin accounts.
+
+## 5. API Endpoints
+
+### 5.1 Product APIs
+- `GET /api/products` – Returns all products.
+- `GET /api/products/grouped` – Returns products grouped by category.
+- `GET /products/{id}` – Renders product details page (Thymeleaf).
+- `GET /products/{id}/json` – Returns product details as JSON (for AJAX/modal).
+- `POST /products` – Adds a new product.
+- `DELETE /products/{id}` – Deletes a product.
+
+### 5.2 Cart & Order APIs
+- `POST /cart/add` – Adds a product to the cart.
+- `GET /cart` – Retrieves current cart items.
+- `POST /order` – Places an order.
+- `GET /order/{id}` – Retrieves order details.
+
+### 5.3 Admin APIs
+- `POST /admin/product` – Add or update product.
+- `DELETE /admin/product/{id}` – Delete product.
+- `GET /admin/orders` – List all orders.
+- `POST /admin/category` – Add or update category.
+
+## 6. Error Handling
+- **No Product Selected:** Modal or message displayed to user.
+- **Product Not Found:** Friendly error message shown.
+- **Internal Server Errors:** Whitelabel error page for unexpected issues.
+- **Form Validation Errors:** Highlighted fields and error messages for invalid input.
+
+## 7. User Experience & UI/UX
+- **Responsive Design:** Optimized for desktop, tablet, and mobile devices.
+- **Intuitive Navigation:** Navbar for easy access to all sections.
+- **Pop-up Modals:** For product details, error messages, and confirmations.
+- **AJAX Search:** Fast, dynamic product search without page reloads.
+- **Loading Indicators:** Shown during data fetches and actions.
+- **Accessibility:** Follows best practices for accessible web design.
+
+## 8. Security & Validation
+- **Input Validation:** On all forms and search fields.
+- **Authentication:** Admin features protected by login (Spring Security recommended).
+- **Authorization:** Role-based access for admin and customer features.
+- **Data Protection:** Secure handling of customer and order data.
+- **Error Messages:** User-friendly and informative, no sensitive info exposed.
+
+## 9. Extensibility & Future Enhancements
+- **Payment Gateway Integration:** For online payments.
+- **User Accounts:** For order history, tracking, and personalized experience.
+- **Inventory Management:** Advanced stock tracking and alerts.
+- **Reports & Analytics:** Sales, inventory, and customer insights.
+- **Notifications:** Email/SMS alerts for orders and promotions.
+- **Multi-Store Support:** Manage multiple store locations.
+
+## 10. Technologies Used
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap, Thymeleaf
+- **Backend:** Java Spring Boot
+- **Database:** MySQL/PostgreSQL (configurable)
+- **Other:** JQuery, Popper.js
+
+## 11. Deployment & Configuration
+- **Build Tool:** Maven (pom.xml)
+- **Application Properties:** Configurable in `application.properties` (DB, server port, etc.)
+- **Deployment:** Can be run as a standalone JAR or deployed to a servlet container.
+- **Environment Variables:** For sensitive config (DB credentials, API keys).
+
+## 12. Folder Structure
+- `src/main/java/com/medicalstore/` – Java source code (controllers, services, models)
+- `src/main/resources/templates/` – Thymeleaf HTML templates
+- `src/main/resources/application.properties` – Configuration
+- `target/` – Compiled classes and packaged JAR
+
+## 13. Sample User Flows
+
+### 13.1 Customer
+1. Visits home page, searches for a product.
+2. Selects a product from dropdown, views details in modal.
+3. Adds product to cart, reviews cart summary.
+4. Proceeds to checkout, enters details, places order.
+5. Receives confirmation and (optionally) tracks order.
+
+### 13.2 Admin
+1. Logs in to admin panel.
+2. Adds new products and categories.
+3. Views and processes orders.
+4. Updates product information and stock levels.
+
+## 14. Screenshots & UI Mockups
+(Include screenshots or wireframes of key pages if available.)
+
+## 15. References & Documentation
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [Thymeleaf Documentation](https://www.thymeleaf.org/documentation.html)
+- [Bootstrap Documentation](https://getbootstrap.com/docs/4.5/getting-started/introduction/)
+
+---
+
+This document provides a detailed overview of the Medical Store application, its features, architecture, and user flows. For further technical details, refer to the source code and API documentation.
