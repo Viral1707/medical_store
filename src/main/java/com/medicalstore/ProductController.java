@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/products")
@@ -21,8 +23,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    public String getProductById(@PathVariable Long id, Model model) {
+        Optional<Product> productOpt = productService.getProductById(id);
+        if (productOpt.isPresent()) {
+            model.addAttribute("product", productOpt.get());
+        } else {
+            model.addAttribute("message", "No product selected or product not found.");
+        }
+        return "product-details";
     }
 
     @PostMapping
@@ -33,5 +41,16 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+    }
+
+    @GetMapping("/{id}/json")
+    @ResponseBody
+    public Object getProductByIdJson(@PathVariable Long id) {
+        Optional<Product> productOpt = productService.getProductById(id);
+        if (productOpt.isPresent()) {
+            return productOpt.get();
+        } else {
+            return Map.of("message", "No product selected or product not found.");
+        }
     }
 }

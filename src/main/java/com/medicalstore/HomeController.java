@@ -44,15 +44,14 @@ public class HomeController {
 
     @GetMapping("/api/products")
     @ResponseBody
-    public List<Product> getProducts(@RequestParam(value = "search", required = false) String search) {
+    public List<Product> getProducts(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "section", required = false) Section section) {
         List<Product> allProducts = productRepository.findAll();
-        if (search == null || search.isEmpty()) {
-            return allProducts;
-        } else {
-            return allProducts.stream()
-                .filter(p -> p.getName().toLowerCase().contains(search.toLowerCase()))
-                .toList();
-        }
+        return allProducts.stream()
+            .filter(p -> (search == null || search.isEmpty() || p.getName().toLowerCase().contains(search.toLowerCase())))
+            .filter(p -> (section == null || p.getSection() == section))
+            .toList();
     }
 
     @PostMapping("/add-to-cart/{productName}")

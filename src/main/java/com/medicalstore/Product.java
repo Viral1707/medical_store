@@ -24,12 +24,17 @@ public class Product {
     @Column
     private String imageUrl;
 
-    public Product(String name, String category, String description, Double price, String imageUrl) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Section section;
+
+    public Product(String name, String category, String description, Double price, String imageUrl, Section section) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.section = section;
     }
 
     public Product() {}
@@ -47,4 +52,6 @@ public class Product {
     public void setPrice(Double price) { this.price = price; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public Section getSection() { return section; }
+    public void setSection(Section section) { this.section = section; }
 }

@@ -1,6 +1,8 @@
+com\medicalstore\Section.class
 com\medicalstore\OrderService.class
 com\medicalstore\OrderItemService.class
 com\medicalstore\ProductController.class
+com\medicalstore\ProductApiController.class
 com\medicalstore\OrderController.class
 com\medicalstore\OrderItemRepository.class
 com\medicalstore\OrderItem.class

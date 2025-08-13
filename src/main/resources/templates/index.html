@@ -411,7 +411,14 @@
             <button onclick="showTestimonial(1)">&#8594;</button>
         </div>
     </section>
-    <section id="all-products" style="max-width:800px;margin:40px auto 0 auto;"></section>
+    <div id="productModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:2rem 2.5rem;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.18);max-width:400px;width:90%;position:relative;">
+            <button id="closeModalBtn" style="position:absolute;top:12px;right:12px;background:#e57373;color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.2em;cursor:pointer;">&times;</button>
+            <div id="modalContent">
+                <!-- Product details will be injected here -->
+            </div>
+        </div>
+    </div>
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -457,25 +464,19 @@
         const searchBox = document.getElementById('searchBox');
         const searchDropdown = document.getElementById('searchDropdown');
         const searchResults = document.getElementById('searchResults');
-        let products = [];
+        let productsByCategory = {};
 
         searchBox.addEventListener('focus', async function() {
-            if (products.length === 0) {
-                const res = await fetch('/api/products');
-                products = await res.json();
+            if (Object.keys(productsByCategory).length === 0) {
+                const res = await fetch('/api/products/grouped');
+                productsByCategory = await res.json();
             }
-            showDropdown(products);
+            showDropdown(productsByCategory, searchBox.value.trim().toLowerCase());
         });
 
         searchBox.addEventListener('input', function() {
             const val = searchBox.value.trim().toLowerCase();
-            if (val === '') {
-                showDropdown(products);
-            } else {
-                fetch('/api/products?search=' + encodeURIComponent(val))
-                    .then(res => res.json())
-                    .then(filtered => showDropdown(filtered));
-            }
+            showDropdown(productsByCategory, val);
         });
 
         document.addEventListener('click', function(e) {
@@ -484,43 +485,116 @@
             }
         });
 
-        function showDropdown(list) {
-            if (list.length === 0) {
-                searchResults.innerHTML = '<li>No products found</li>';
-            } else {
-                searchResults.innerHTML = list.map(p => `<li>${p.name}</li>`).join('');
+        function showDropdown(groupedProducts, filter) {
+            let html = '';
+            let found = false;
+            for (const category in groupedProducts) {
+                // Filter products by name
+                const filtered = groupedProducts[category].filter(p => p.name.toLowerCase().includes(filter));
+                if (filtered.length > 0) {
+                    found = true;
+                    html += `<li style='font-weight:bold;background:#e0f7fa;display:flex;align-items:center;'><span style='flex:1;text-align:left;'>${category}</span></li>`;
+                    html += filtered.map(p => `<li style='padding-left:24px;'>${p.name}</li>`).join('');
+                }
             }
+            if (!found) {
+                html = '<li>No products found</li>';
+            }
+            searchResults.innerHTML = html;
             searchDropdown.style.display = 'block';
         }
 
+        let selectedProductId = null;
+        let selectedProductName = '';
+
+        function getProductByName(name) {
+            for (const category in productsByCategory) {
+                for (const p of productsByCategory[category]) {
+                    if (p.name === name) return p;
+                }
+            }
+            return null;
+        }
+
         searchResults.addEventListener('click', function(e) {
-            if (e.target.tagName === 'LI') {
+            if (e.target.tagName === 'LI' && e.target.style.paddingLeft) {
                 searchBox.value = e.target.textContent;
                 searchDropdown.style.display = 'none';
+                const product = getProductByName(e.target.textContent);
+                if (product) {
+                    selectedProductId = product.id;
+                    selectedProductName = product.name;
+                }
             }
         });
-        // --- Display all products grouped by category ---
-        async function renderAllProducts() {
-            const res = await fetch('/api/products');
-            const products = await res.json();
-            // Group by category
-            const grouped = {};
-            products.forEach(p => {
-                if (!grouped[p.category]) grouped[p.category] = [];
-                grouped[p.category].push(p);
-            });
-            let html = '';
-            Object.keys(grouped).forEach(category => {
-                html += `<div style="margin-bottom:24px;">
-                    <div style="font-weight:bold;color:#1b5e20;font-size:1.3em;">${category}</div>
-                    <ul style="margin:8px 0 0 18px;">
-                        ${grouped[category].map(prod => `<li style='color:#333;font-weight:normal;font-size:1.08em;'>${prod.name}</li>`).join('')}
-                    </ul>
-                </div>`;
-            });
-            document.getElementById('all-products').innerHTML = html;
+
+        document.querySelector('.search-bar form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (selectedProductId) {
+                // Fetch product details via AJAX and show modal
+                try {
+                    const res = await fetch('/products/' + selectedProductId + '/json');
+                    if (res.ok) {
+                        const product = await res.json();
+                        showProductModal(product);
+                    } else {
+                        showProductModal({message: 'No product selected or product not found.'});
+                    }
+                } catch {
+                    showProductModal({message: 'Error fetching product details.'});
+                }
+            } else {
+                // Perform a general search or show a message
+                const searchTerm = searchBox.value.trim();
+                if (searchTerm) {
+                    window.location.href = '/products?search=' + encodeURIComponent(searchTerm);
+                } else {
+                    alert('Please enter or select a product to search.');
+                }
+            }
+        });
+
+        function showProductModal(product) {
+            const modal = document.getElementById('productModal');
+            const content = document.getElementById('modalContent');
+            if (product && product.name) {
+                content.innerHTML = `
+                    <h2 style='color:#1976d2;'>${product.name}</h2>
+                    <img src='${product.imageUrl || "https://cdn-icons-png.flaticon.com/512/2965/2965567.png"}' alt='Product Image' style='width:150px;display:block;margin:0 auto 1.5rem auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.10);' />
+                    <p class='price'><strong>Price:</strong> ₹${product.price}</p>
+                    <p><strong>Description:</strong> ${product.description || "No description."}</p>
+                    <p><strong>Category:</strong> ${product.category || "N/A"}</p>
+                `;
+            } else {
+                content.innerHTML = `<div style='background:#fffbe6;border:1px solid #ffe082;border-radius:8px;padding:2rem;text-align:center;'><h3>${product.message || 'No product selected or product not found.'}</h3></div>`;
+            }
+            modal.style.display = 'flex';
         }
-        renderAllProducts();
+        document.getElementById('closeModalBtn').onclick = function() {
+            document.getElementById('productModal').style.display = 'none';
+        };
+        // --- Display all products grouped by category ---
+        // async function renderAllProducts() {
+        //     const res = await fetch('/api/products');
+        //     const products = await res.json();
+        //     // Group by category
+        //     const grouped = {};
+        //     products.forEach(p => {
+        //         if (!grouped[p.category]) grouped[p.category] = [];
+        //         grouped[p.category].push(p);
+        //     });
+        //     let html = '';
+        //     Object.keys(grouped).forEach(category => {
+        //         html += `<div style="margin-bottom:24px;">
+        //             <div style="font-weight:bold;color:#1b5e20;font-size:1.3em;">${category}</div>
+        //             <ul style="margin:8px 0 0 18px;">
+        //                 ${grouped[category].map(prod => `<li style='color:#333;font-weight:normal;font-size:1.08em;'>${prod.name}</li>`).join('')}
+        //             </ul>
+        //         </div>`;
+        //     });
+        //     document.getElementById('all-products').innerHTML = html;
+        // }
+        // renderAllProducts();
     </script>
 </body>
 </html>

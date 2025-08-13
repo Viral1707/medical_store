@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Details</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            background: #f4f6f8;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin: 3rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 2rem 2.5rem;
+        }
+        h2 {
+            color: #1976d2;
+            margin-bottom: 1rem;
+        }
+        img {
+            display: block;
+            margin: 0 auto 1.5rem auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+        p {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.8rem;
+        }
+        .price {
+            font-size: 1.3rem;
+            color: #388e3c;
+            font-weight: bold;
+        }
+        .message-box {
+            background: #fffbe6;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div th:if="${product}">
+            <h2 th:text="${product.name}">Product Name</h2>
+            <img th:src="${product.imageUrl}" alt="Product Image" style="width:150px;" />
+            <p class="price"><strong>Price:</strong> <span th:text="${product.price}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${product.description}"></span></p>
+            <p><strong>Category:</strong> <span th:text="${product.category}"></span></p>
+        </div>
+        <div th:if="${message}" class="message-box">
+            <h3 th:text="${message}">No product selected or product not found.</h3>
+        </div>
+    </div>
+</body>
+</html>
