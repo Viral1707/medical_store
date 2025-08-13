@@ -103,4 +103,19 @@ public class HomeController {
         model.addAttribute("cartItems", cartItems);
         return "cart-summary";
     }
+
+    @GetMapping("/storekeeper-home")
+    public String storekeeperHome() {
+        return "storekeeper-home";
+    }
+
+    @GetMapping("/sell-medicine")
+    public String sellMedicine() {
+        return "sell-medicine";
+    }
+
+    @GetMapping("/sell-product")
+    public String sellProduct() {
+        return "sell-medicine";
+    }
 }

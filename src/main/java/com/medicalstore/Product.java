@@ -28,6 +28,24 @@ public class Product {
     @Column(nullable = false)
     private Section section;
 
+    @Column
+    private String batchNo;
+
+    @Column
+    private java.sql.Date expiryDate;
+
+    @Column
+    private Double mrp;
+
+    @Column
+    private Double sellingPrice;
+
+    @Column
+    private Double gstPercent;
+
+    @Column(name = "quantity")
+    private Integer quantity;
+
     public Product(String name, String category, String description, Double price, String imageUrl, Section section) {
         this.name = name;
         this.category = category;
@@ -54,4 +72,16 @@ public class Product {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public Section getSection() { return section; }
     public void setSection(Section section) { this.section = section; }
+    public String getBatchNo() { return batchNo; }
+    public void setBatchNo(String batchNo) { this.batchNo = batchNo; }
+    public java.sql.Date getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(java.sql.Date expiryDate) { this.expiryDate = expiryDate; }
+    public Double getMrp() { return mrp; }
+    public void setMrp(Double mrp) { this.mrp = mrp; }
+    public Double getSellingPrice() { return sellingPrice; }
+    public void setSellingPrice(Double sellingPrice) { this.sellingPrice = sellingPrice; }
+    public Double getGstPercent() { return gstPercent; }
+    public void setGstPercent(Double gstPercent) { this.gstPercent = gstPercent; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 }

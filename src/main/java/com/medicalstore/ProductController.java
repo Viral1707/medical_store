@@ -53,4 +53,10 @@ public class ProductController {
             return Map.of("message", "No product selected or product not found.");
         }
     }
+
+    @GetMapping("/api/products")
+    @ResponseBody
+    public List<Product> getAllProductsJson() {
+        return productService.getAllProducts();
+    }
 }

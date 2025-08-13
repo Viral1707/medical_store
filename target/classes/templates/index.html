@@ -319,6 +319,10 @@
 </head>
 <body>
     <div class="header">Om Medical Store</div>
+    <div id="user-toggle" style="position: absolute; top: 18px; right: 32px; z-index: 1000;">
+        <button id="storekeeperBtn" class="user-btn active" onclick="setUser('StoreKeeper')">StoreKeeper</button>
+        <button id="customerBtn" class="user-btn" onclick="setUser('Customer')">Customer</button>
+    </div>
     <nav class="navbar sticky-navbar navbar-expand-lg bg-success">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -418,6 +422,33 @@
                 <!-- Product details will be injected here -->
             </div>
         </div>
+    </div>
+    <!-- StoreKeeper Login Modal -->
+    <div class="modal fade" id="storekeeperLoginModal" tabindex="-1" role="dialog" aria-labelledby="storekeeperLoginLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="storekeeperLoginLabel">StoreKeeper Login</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="storekeeperLoginForm">
+              <div class="form-group">
+                <label for="storekeeperUsername">Username</label>
+                <input type="text" class="form-control" id="storekeeperUsername" required>
+              </div>
+              <div class="form-group">
+                <label for="storekeeperPassword">Password</label>
+                <input type="password" class="form-control" id="storekeeperPassword" required>
+              </div>
+              <div id="loginErrorMsg" style="color:red;display:none;margin-top:10px;"></div>
+              <button type="submit" class="btn btn-success">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
     <footer class="footer">
         <div class="footer-content">
@@ -595,6 +626,80 @@
         //     document.getElementById('all-products').innerHTML = html;
         // }
         // renderAllProducts();
+
+        // User toggle logic
+        function setUser(user) {
+            document.getElementById('storekeeperBtn').classList.remove('active');
+            document.getElementById('customerBtn').classList.remove('active');
+            if (user === 'StoreKeeper') {
+                document.getElementById('storekeeperBtn').classList.add('active');
+                $('#storekeeperLoginModal').modal('show');
+            } else {
+                document.getElementById('customerBtn').classList.add('active');
+            }
+            // You can add more logic here to show/hide content based on user
+        }
+
+        // StoreKeeper Login Form Submission
+        document.getElementById('storekeeperLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var username = document.getElementById('storekeeperUsername').value;
+            var password = document.getElementById('storekeeperPassword').value;
+            var errorMsg = document.getElementById('loginErrorMsg');
+            errorMsg.style.display = 'none';
+            try {
+                const response = await fetch('/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+                if (response.ok) {
+                    // Redirect to StoreKeeper page (replace with your actual page)
+                    window.location.href = '/storekeeper-home';
+                } else {
+                    errorMsg.textContent = 'Invalid credentials. Please try again.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch {
+                errorMsg.textContent = 'Error connecting to server.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // Clear StoreKeeper login fields when modal is closed, opened, or page is shown (browser back)
+        $('#storekeeperLoginModal').on('hidden.bs.modal show.bs.modal', function () {
+            document.getElementById('storekeeperUsername').value = '';
+            document.getElementById('storekeeperPassword').value = '';
+            document.getElementById('loginErrorMsg').style.display = 'none';
+        });
+        window.addEventListener('pageshow', function() {
+            if ($('#storekeeperLoginModal').hasClass('show')) {
+                document.getElementById('storekeeperUsername').value = '';
+                document.getElementById('storekeeperPassword').value = '';
+                document.getElementById('loginErrorMsg').style.display = 'none';
+            }
+        });
+        // Focus username field when modal is shown
+        $('#storekeeperLoginModal').on('shown.bs.modal', function () {
+            document.getElementById('storekeeperUsername').focus();
+        });
     </script>
+    <style>
+        .user-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid #2e8b57;
+            background: #f5f5f5;
+            color: #2e8b57;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .user-btn.active {
+            background: #2e8b57;
+            color: #fff;
+        }
+    </style>
 </body>
 </html>

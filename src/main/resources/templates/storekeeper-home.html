@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StoreKeeper Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .storekeeper-title {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+        .quick-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 70px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            text-align: center;
+            min-width: 160px;
+        }
+        .shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .shortcut-card {
+            background: #e3f2fd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 18px 32px;
+            text-align: center;
+            min-width: 180px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .shortcut-card:hover {
+            background: #bbdefb;
+        }
+        .main-actions {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="storekeeper-title">StoreKeeper Home</div>
+    <div class="logout-btn">
+        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+    </div>
+    <div class="container mt-5">
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div style="font-size:1.2em;font-weight:600;">Today’s Sales</div>
+                <div style="font-size:2em;color:#2e8b57;">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div style="font-size:1.2em;font-weight:600;">Stock Alerts</div>
+                <div style="font-size:2em;color:#d84315;">0</div>
+            </div>
+            <div class="stat-card">
+                <div style="font-size:1.2em;font-weight:600;">Pending Orders</div>
+                <div style="font-size:2em;color:#1976d2;">0</div>
+            </div>
+            <div class="stat-card">
+                <div style="font-size:1.2em;font-weight:600;">Expiry Alerts</div>
+                <div style="font-size:2em;color:#fbc02d;">0</div>
+            </div>
+        </div>
+        <!-- Shortcuts -->
+        <div class="shortcuts">
+            <div class="shortcut-card" id="sellProductBtn">Sell Product</div>
+            <div class="shortcut-card" id="purchaseEntryBtn">Purchase Entry</div>
+            <div class="shortcut-card" id="stockManagementBtn">Stock Management</div>
+            <div class="shortcut-card" id="reportsBtn">Reports</div>
+            <div class="shortcut-card" id="customerManagementBtn">Customer Management</div>
+            <div class="shortcut-card" id="supplierManagementBtn">Supplier Management</div>
+            <div class="shortcut-card" id="settingsBtn">Settings</div>
+        </div>
+        <!-- Main Action Buttons -->
+        <div class="main-actions">
+            <button class="btn btn-success btn-lg" id="newSaleBtn">New Sale</button>
+            <button class="btn btn-primary btn-lg" id="viewReportsBtn">View Reports</button>
+            <button class="btn btn-warning btn-lg" id="stockAlertsBtn">Stock Alerts</button>
+        </div>
+    </div>
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to logout?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-danger" id="confirmLogoutBtn">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Logout button click handler
+        $('#logoutBtn').on('click', function() {
+            $('#logoutModal').modal('show');
+        });
+        // Confirm logout handler
+        $('#confirmLogoutBtn').on('click', function() {
+            window.location.href = '/';
+        });
+        // Sell Product button click handler
+        $('#sellProductBtn').on('click', function() {
+            window.location.href = '/sell-product';
+        });
+        // Other shortcut card handlers
+        $('#purchaseEntryBtn').on('click', function() {
+            window.location.href = '/purchase-entry';
+        });
+        $('#stockManagementBtn').on('click', function() {
+            window.location.href = '/stock-management';
+        });
+        $('#reportsBtn').on('click', function() {
+            window.location.href = '/reports';
+        });
+        $('#customerManagementBtn').on('click', function() {
+            window.location.href = '/customer-management';
+        });
+        $('#supplierManagementBtn').on('click', function() {
+            window.location.href = '/supplier-management';
+        });
+        $('#settingsBtn').on('click', function() {
+            window.location.href = '/settings';
+        });
+        // Main action button handlers
+        $('#newSaleBtn').on('click', function() {
+            window.location.href = '/new-sale';
+        });
+        $('#viewReportsBtn').on('click', function() {
+            window.location.href = '/view-reports';
+        });
+        $('#stockAlertsBtn').on('click', function() {
+            window.location.href = '/stock-alerts';
+        });
+    </script>
+</body>
+</html>

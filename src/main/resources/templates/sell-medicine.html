@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sell Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container-sell {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 30px 30px;
+        }
+        .search-section {
+            margin-bottom: 18px;
+        }
+        .medicine-table {
+            font-size: 0.95em;
+            border-collapse: collapse;
+            width: 100%;
+            background: #f9f9f9;
+        }
+        .medicine-table th, .medicine-table td {
+            border: 1px solid #d1d1d1;
+            padding: 6px 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .medicine-table th {
+            background: #e3eafc;
+            font-weight: 600;
+        }
+        .medicine-table tr {
+            transition: background 0.2s;
+        }
+        .medicine-table tr:hover {
+            background: #f1f8ff;
+        }
+        .medicine-table input[type="number"] {
+            width: 60px;
+            font-size: 0.95em;
+            padding: 2px 4px;
+        }
+        .cart-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+        .customer-section {
+            margin-top: 22px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .summary-section {
+            margin-top: 22px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .payment-options {
+            margin-top: 14px;
+        }
+        .payment-options label {
+            margin-right: 14px;
+        }
+        .selected-row {
+            background: #d1e7dd;
+        }
+        .highlight-row {
+            background: #ffe066 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-sell">
+        <div class="d-flex align-items-center mb-3">
+            <button class="btn btn-outline-primary mr-2" id="backToHomeBtn">
+                &larr; Back
+            </button>
+            <h2 class="mb-0">Sell Product</h2>
+        </div>
+        <!-- Search Box -->
+        <div class="search-section">
+            <input type="text" class="form-control" placeholder="Search by Product Name / Barcode / Batch No." id="searchProduct">
+        </div>
+        <!-- Medicine Table/List -->
+        <div class="table-responsive">
+            <table class="table table-bordered medicine-table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Batch No.</th>
+                        <th>Quantity in Stock</th>
+                        <th>MRP</th>
+                        <th>Selling Price</th>
+                        <th>GST %</th>
+                        <th>Quantity (Sale)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="medicineList">
+                    <tr>
+                        <td colspan="8"></td>
+                        <td>
+                            <button class="btn btn-info btn-sm" style="width:100px;font-weight:600;">Select</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Cart Actions -->
+        <div class="cart-actions">
+            <button class="btn btn-secondary">Hold Bill</button>
+            <button class="btn btn-primary">Generate Invoice</button>
+            <button class="btn btn-danger">Cancel Transaction</button>
+        </div>
+        <!-- Customer Details -->
+        <div class="customer-section mt-4">
+            <h5>Customer Details (Optional)</h5>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>Name</label>
+                    <input type="text" class="form-control" placeholder="Customer Name">
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Contact No.</label>
+                    <input type="text" class="form-control" placeholder="Contact Number">
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Prescription Upload</label>
+                    <input type="file" class="form-control-file">
+                </div>
+            </div>
+        </div>
+        <!-- Summary Section -->
+        <div class="summary-section mt-4">
+            <h5>Bill Summary</h5>
+            <div class="row">
+                <div class="col-md-4">Total Items: <span id="totalItems">1</span></div>
+                <div class="col-md-4">Total Cost: <span id="totalCost">₹18</span></div>
+                <div class="col-md-4">GST Breakdown: <span id="gstBreakdown">₹0.90</span></div>
+            </div>
+        </div>
+        <!-- Payment Options -->
+        <div class="payment-options mt-4">
+            <h5>Payment Options</h5>
+            <div>
+                <label><input type="radio" name="payment" value="cash" checked> Cash</label>
+                <label><input type="radio" name="payment" value="upi"> UPI</label>
+                <label><input type="radio" name="payment" value="card"> Card</label>
+                <label><input type="radio" name="payment" value="wallet"> Wallet</label>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Back button handler
+            $('#backToHomeBtn').on('click', function() {
+                window.location.href = '/storekeeper-home';
+            });
+
+            // Store selected rows
+            let selectedRows = [];
+
+            // Restore selectedRows from localStorage if available
+            if (localStorage.getItem('selectedRows')) {
+                try {
+                    selectedRows = JSON.parse(localStorage.getItem('selectedRows')) || [];
+                } catch (e) {
+                    selectedRows = [];
+                }
+            }
+
+            // Save selectedRows to localStorage
+            function saveSelectedRows() {
+                localStorage.setItem('selectedRows', JSON.stringify(selectedRows));
+            }
+
+            // Render selected rows
+            function renderSelectedRows() {
+                let rows = '';
+                selectedRows.forEach(function(product, idx) {
+                    rows += `<tr class='selected-row'>
+                        <td>${product.name || ''}</td>
+                        <td>${product.batchNo || ''}</td>
+                        <td>${product.quantityInStock || ''}</td>
+                        <td>${product.expiryDate || ''}</td>
+                        <td>₹${product.mrp || ''}</td>
+                        <td>₹${product.sellingPrice || ''}</td>
+                        <td>${product.gstPercent || ''}%</td>
+                        <td><input type='number' min='1' max='${product.quantityInStock || ''}' value='${product.selectedQty || 1}' class='form-control' style='width:60px;' disabled></td>
+                        <td>
+                            <button class='btn btn-danger btn-sm remove-btn' data-idx='${idx}' style='width:100px;font-weight:600;'>Remove</button>
+                        </td>
+                    </tr>`;
+                });
+                return rows;
+            }
+
+            // Search and display top 5 related products
+            function renderTable(searchTerm) {
+                let rows = '';
+                let highlightIndexes = [];
+                if (searchTerm.trim().length >= 3) {
+                    // Check if any selected row matches the search term (3 or more chars)
+                    selectedRows.forEach(function(product, idx) {
+                        if (
+                            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            product.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+                        ) {
+                            highlightIndexes.push(idx);
+                        }
+                    });
+                }
+                selectedRows.forEach(function(product, idx) {
+                    rows += `<tr class='selected-row${highlightIndexes.includes(idx) ? " highlight-row" : ""}'>
+                        <td>${product.name || ''}</td>
+                        <td>${product.batchNo || ''}</td>
+                        <td>${product.quantity || ''}</td>
+                        <td>${product.expiryDate || ''}</td>
+                        <td>₹${product.mrp || ''}</td>
+                        <td>₹${product.sellingPrice || ''}</td>
+                        <td>${product.gstPercent || ''}%</td>
+                        <td><input type='number' min='1' max='${product.quantity || ''}' value='${product.selectedQty || 1}' class='form-control' style='width:60px;' disabled></td>
+                        <td>
+                            <button class='btn btn-danger btn-sm remove-btn' data-idx='${idx}' style='width:100px;font-weight:600;'>Remove</button>
+                        </td>
+                    </tr>`;
+                });
+                if (searchTerm.trim() === '') {
+                    if (selectedRows.length === 0) {
+                        rows += '<tr><td colspan="8"></td><td><button class="btn btn-info btn-sm select-btn" style="width:100px;font-weight:600;">Select</button></td></tr>';
+                    }
+                    $('#medicineList').html(rows);
+                    return;
+                }
+                $.get('/api/products/all', { search: searchTerm }, function(data) {
+                    // Filter out already selected products (by name and batchNo)
+                    let filtered = data.filter(function(product) {
+                        return !selectedRows.some(function(sel) {
+                            return sel.name.trim().toLowerCase() === (product.name || '').trim().toLowerCase() &&
+                                   sel.batchNo.trim().toLowerCase() === (product.batchNo || '').trim().toLowerCase();
+                        });
+                    });
+                    filtered.slice(0, 5).forEach(function(product) {
+                        rows += `<tr>
+                            <td>${product.name || ''}</td>
+                            <td>${product.batchNo || ''}</td>
+                            <td>${product.quantity || ''}</td>
+                            <td>₹${product.price || ''}</td>
+                            <td>₹${product.price || ''}</td>
+                            <td>${product.gst_percent || ''}%</td>
+                            <td><input type="number" min="1" max="${product.quantity || ''}" value="1" class="form-control qty-input" style="width:60px;"></td>
+                            <td>
+                                <button class='btn btn-info btn-sm select-btn' style='width:100px;font-weight:600;'>Select</button>
+                            </td>
+                        </tr>`;
+                    });
+                    if (filtered.length === 0 && selectedRows.length === 0) {
+                        rows = '<tr><td colspan="8">No products found</td><td></td></tr>';
+                    }
+                    $('#medicineList').html(rows);
+                });
+            }
+
+            // Search box event
+            $('#searchProduct').on('input', function() {
+                renderTable($(this).val());
+            });
+
+            // Delegate click for select button
+            $('#medicineList').on('click', '.select-btn', function() {
+                var $row = $(this).closest('tr');
+                var product = {
+                    name: $row.find('td').eq(0).text(),
+                    batchNo: $row.find('td').eq(1).text(),
+                    quantityInStock: $row.find('td').eq(2).text(),
+                    expiryDate: $row.find('td').eq(3).text(),
+                    mrp: $row.find('td').eq(4).text().replace('₹',''),
+                    sellingPrice: $row.find('td').eq(5).text().replace('₹',''),
+                    gstPercent: $row.find('td').eq(6).text().replace('%',''),
+                    selectedQty: $row.find('.qty-input').val() || 1
+                };
+                selectedRows.push(product);
+                saveSelectedRows();
+                renderTable($('#searchProduct').val());
+            });
+
+            // Delegate click for remove button
+            $('#medicineList').on('click', '.remove-btn', function() {
+                var idx = $(this).data('idx');
+                selectedRows.splice(idx, 1);
+                saveSelectedRows();
+                renderTable($('#searchProduct').val());
+            });
+
+            // Initial load
+            renderTable('');
+
+            // Add highlight style for selected row
+            $('<style>.highlight-row { background: #ffe066 !important; }</style>').appendTo('head');
+        });
+    </script>
+</body>
+</html>

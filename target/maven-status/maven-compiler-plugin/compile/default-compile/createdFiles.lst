@@ -17,5 +17,6 @@ com\medicalstore\ProductService.class
 com\medicalstore\OrderItemController.class
 com\medicalstore\UserRepository.class
 com\medicalstore\User.class
+com\medicalstore\ProductRestController.class
 com\medicalstore\Category.class
 com\medicalstore\ProductRepository.class
