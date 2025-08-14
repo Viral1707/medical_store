@@ -63,6 +63,7 @@ The Medical Store application is a comprehensive web-based platform designed to 
 - `GET /products/{id}/json` – Returns product details as JSON (for AJAX/modal).
 - `POST /products` – Adds a new product.
 - `DELETE /products/{id}` – Deletes a product.
+- `GET /api/products/all` – Returns all products as JSON, including the `quantity` field.
 
 ### 5.2 Cart & Order APIs
 - `POST /cart/add` – Adds a product to the cart.
@@ -149,3 +150,16 @@ The Medical Store application is a comprehensive web-based platform designed to 
 ---
 
 This document provides a detailed overview of the Medical Store application, its features, architecture, and user flows. For further technical details, refer to the source code and API documentation.
+
+---
+
+# 2025-08-13: Sell Product Page & Backend API Updates
+
+- Added `quantity` field to the `Product` entity and mapped it to the database column.
+- Ensured the products table contains a `quantity` column with correct values.
+- Created a dedicated REST controller (`ProductRestController`) with endpoint `/api/products/all` to return all products as JSON, including the `quantity` field.
+- Updated frontend (`sell-medicine.html`) to fetch product data from `/api/products/all` and display `Quantity in Stock` using the `quantity` field.
+- Fixed endpoint conflicts and compilation errors by separating REST controllers and updating endpoint mappings.
+- Verified that the UI now correctly displays the quantity for each product from the database.
+
+---
